@@ -8,5 +8,13 @@
         "default_path": "index.html"
     },
 
-    "permissions": ["sidePanel"]
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+
+    "permissions": ["sidePanel", "scripting", "tabs"],
+
+    "host_permissions": ["https://www.depop.com/products/create/", "https://www.grailed.com/sell/new"]
 }
+

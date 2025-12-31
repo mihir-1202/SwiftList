@@ -1,33 +1,55 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import type { ExtensionMessage } from "./types";
+
+
+//convert the file to base64 string
+function fileToBase64(file: File): Promise<string>
+{
+  return new Promise( (resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string); //callback when the file is read successfully -> return the base64 string
+    reader.onerror = () => reject(new Error("Failed to read file")); //callback when the file is read unsuccessfully
+    reader.readAsDataURL(file); //read the file as a data URL
+  })
+}
+
+async function openDepop(file: File | null): Promise<void>
+{
+  if (!file)
+      return;
+  const base64Image = await fileToBase64(file);
+  const message: ExtensionMessage = {action: "openDepop", base64Image: base64Image};
+  chrome.runtime.sendMessage(message);
+}
+
+async function openGrailed(file: File | null): Promise<void>
+{
+  if (!file)
+    return;
+  const base64Image = await fileToBase64(file);
+  const message: ExtensionMessage = {action: "openGrailed", base64Image: base64Image};
+  chrome.runtime.sendMessage(message);
+}
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [file, setFile] = useState<File | null>(null);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <input type = "file" accept = "image/*" onChange = { (e: React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files?.[0] ?? null) } />
+
+      <img src = {file ? URL.createObjectURL(file) : ""} alt = "preview" style = {{maxWidth: "300px", maxHeight: "300px"}} />
+
+      <div className = "card">
+        <button onClick = { () => openDepop(file) }> Click to open depop in a side tab </button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div className = "card">
+        <button onClick = { () => openGrailed(file) }> Click to open grailed in a side tab </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      
     </>
   )
 }

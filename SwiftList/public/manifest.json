@@ -2,5 +2,11 @@
     "manifest_version": 3,
     "name": "SwiftList",
     "version": "1.0",
-    "description": "A chrome extension for crosslisting clothing items on multiple platforms."
+    "description": "A chrome extension for crosslisting clothing items on multiple platforms.",
+
+    "side_panel": {
+        "default_path": "index.html"
+    },
+
+    "permissions": ["sidePanel"]
 }

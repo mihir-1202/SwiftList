@@ -4,3 +4,5 @@ barrel file doesnt actually contain the data like a python __init__.py file woul
 */
 
 export * from "./messages";
+
+export * from "./models";
